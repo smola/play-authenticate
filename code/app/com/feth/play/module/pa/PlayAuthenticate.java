@@ -91,6 +91,15 @@ public abstract class PlayAuthenticate {
 		 */
 		public abstract Call afterLogout();
 
+		/**
+		 * Do something after a successful authentication.
+		 * 
+		 * This is called when a login was successful. Either after
+		 * an explicit login or after sign up. Make sure you call this
+		 * if you manually login the user (i.e. PlayAuthenticate.storeUser()).
+		 */
+		public void onAuthSuccess(final Context ctx, final AuthUser authUser) { }
+
 		public Call onException(final AuthException e) {
 			return null;
 		}
@@ -394,6 +403,7 @@ public abstract class PlayAuthenticate {
 	public static Result loginAndRedirect(final Context context,
 			final AuthUser loginUser) {
 		storeUser(context.session(), loginUser);
+		getResolver().onAuthSuccess(context, loginUser);
 		return Controller.redirect(getJumpUrl(context));
 	}
 
@@ -431,7 +441,7 @@ public abstract class PlayAuthenticate {
 	public static Result handleAuthentication(final String provider,
 			final Context context, final Object payload) {
 		final AuthProvider ap = getProvider(provider);
-		if (ap == null) {
+		if (ap == null || !ap.isManaged()) {
 			// Provider wasn't found and/or user was fooling with our stuff -
 			// tell him off:
 			return Controller.notFound(Messages.get(

@@ -9,7 +9,6 @@ import play.data.Form;
 import play.mvc.*;
 import play.mvc.Http.Response;
 import play.mvc.Http.Session;
-import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
@@ -19,6 +18,7 @@ import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 
 import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.providers.cookie.CookieAuthProvider;
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
 import com.feth.play.module.pa.user.AuthUser;
 
@@ -63,6 +63,9 @@ public class Application extends Controller {
 			return badRequest(login.render(filledForm));
 		} else {
 			// Everything was filled
+			if (!filledForm.get().rememberMe) {
+				CookieAuthProvider.getCookieProvider().doNotRemember(ctx());
+			}
 			return UsernamePasswordAuthProvider.handleLogin(ctx());
 		}
 	}

@@ -1,6 +1,7 @@
 package security;
 
 import models.User;
+import play.Logger;
 import play.mvc.Http;
 import play.mvc.Result;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
@@ -8,6 +9,7 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import be.objectify.deadbolt.core.models.Subject;
 
 import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.providers.cookie.CookieAuthProvider;
 import com.feth.play.module.pa.user.AuthUserIdentity;
 
 public class MyDeadboltHandler extends AbstractDeadboltHandler {
@@ -20,6 +22,11 @@ public class MyDeadboltHandler extends AbstractDeadboltHandler {
 		} else {
 			// user is not logged in
 
+			// Comment this if you want to disable Remember Me cookies.
+			if (CookieAuthProvider.getCookieProvider().authenticate(context) != null) {
+				return null;
+			}
+			
 			// call this if you want to redirect your visitor to the page that
 			// was requested before sending him to the login page
 			// if you don't call this, the user will get redirected to the page

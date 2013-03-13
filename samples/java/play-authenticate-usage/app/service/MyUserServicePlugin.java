@@ -3,8 +3,10 @@ package service;
 import models.User;
 import play.Application;
 
+import com.avaje.ebean.Ebean;
 import com.feth.play.module.pa.user.AuthUser;
 import com.feth.play.module.pa.user.AuthUserIdentity;
+import com.feth.play.module.pa.providers.cookie.CookieAuthUser;
 import com.feth.play.module.pa.service.UserServicePlugin;
 
 public class MyUserServicePlugin extends UserServicePlugin {
@@ -48,6 +50,18 @@ public class MyUserServicePlugin extends UserServicePlugin {
 	public AuthUser link(final AuthUser oldUser, final AuthUser newUser) {
 		User.addLinkedAccount(oldUser, newUser);
 		return newUser;
+	}
+	
+	@Override
+	public void unlink(final AuthUser unlinkUser) {
+		if (unlinkUser instanceof CookieAuthUser) {
+			Ebean.createSqlUpdate("DELETE FROM linked_account WHERE provider_key = :provider AND provider_user_id = :id")
+				.setParameter("provider", unlinkUser.getProvider())
+				.setParameter("id", unlinkUser.getId())
+				.execute();
+			return;
+		}
+		throw new UnsupportedOperationException("unlink is not supported for provider: " + unlinkUser.getProvider());
 	}
 	
 	@Override

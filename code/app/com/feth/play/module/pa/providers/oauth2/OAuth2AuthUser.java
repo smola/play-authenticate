@@ -1,10 +1,9 @@
 package com.feth.play.module.pa.providers.oauth2;
 
-
-
 import com.feth.play.module.pa.user.AuthUser;
+import com.feth.play.module.pa.user.TokenIdentity;
 
-public abstract class OAuth2AuthUser extends AuthUser {
+public abstract class OAuth2AuthUser extends AuthUser implements TokenIdentity {
 
 	/**
 	 * 
@@ -40,4 +39,9 @@ public abstract class OAuth2AuthUser extends AuthUser {
 	public String getState() {
 		return state;
 	}
+	
+	public String getToken() {
+		return getOAuth2AuthInfo().getAccessToken();
+	}
+	
 }

@@ -78,6 +78,9 @@ public class MyUsernamePasswordAuthProvider
 		@MinLength(5)
 		public String password;
 
+		@Required
+		public boolean rememberMe;
+		
 		@Override
 		public String getEmail() {
 			return email;
@@ -87,6 +90,7 @@ public class MyUsernamePasswordAuthProvider
 		public String getPassword() {
 			return password;
 		}
+		
 	}
 
 	public static class MySignup extends MyLogin {

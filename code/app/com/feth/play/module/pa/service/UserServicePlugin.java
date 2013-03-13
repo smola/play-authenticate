@@ -33,4 +33,10 @@ public abstract class UserServicePlugin extends Plugin implements UserService {
 		// Default: just do nothing when user logs in again
 		return knownUser;
 	}
+	
+	@Override
+	public void unlink(final AuthUser knownUser) {
+		// Default: Refuse to unlink, throw exception,
+		throw new UnsupportedOperationException("unlink is not supported");
+	}
 }

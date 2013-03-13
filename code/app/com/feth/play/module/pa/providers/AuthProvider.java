@@ -121,5 +121,9 @@ public abstract class AuthProvider extends Plugin {
 	}
 
 	public abstract boolean isExternal();
+	
+	public boolean isManaged() {
+		return true;
+	}
 
 }
